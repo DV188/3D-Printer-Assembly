@@ -53,10 +53,10 @@ module trophyBase(length, width, height) {
 				polygon([[0,0],[width,0],[width,height*0.10],[width*0.75,height],[0,height]]);
 			}
 
-			translate([length*0.90, height*0.15, 0]) {
+			translate([width - 3, height*0.15, 0]) {
 				rotate([0, 90, textAngle]) {
 					linear_extrude(3) text("CATAN", font = "Georgia:sltyle=Bold",
-							size = 6, halign = "center");
+							size = 12, halign = "center");
 				}
 			}
 		}
@@ -83,7 +83,7 @@ module bottleOpener(large, small, height, radius) {
 	centerSmall = (large - small)/2; // Offsets small to be centered with respect to large.
 
 	// Connects four circles at each corner to create rounded trapezoid.
-	hull () {
+	hull() {
 		translate([-(large/2) + radius, -(height/2) + radius, 0]) circle(r = radius);
 		translate([(large/2) - radius, -(height/2) + radius, 0]) circle(r = radius);
 		translate([(small/2) - radius, (height/2) - radius, 0]) circle(r = radius);
@@ -93,6 +93,9 @@ module bottleOpener(large, small, height, radius) {
 
 /*
    Final object which creates the trophy.
+   The size of the bottle opener is somewhat set in stone as it's size for a Canadian nickel.
+   Rendering the trophy smaller than the opener will cause problems.
+
    Parameters:
    - baseLength determines the x-axis with respect to the catan lettering.
    - baseWidth determines the depth with respect to the catan lettering
@@ -109,11 +112,21 @@ module trophy(baseLength, baseWidth, baseHeight, robberRadius, robberHeight) {
 				rotate([90, 0, 0]) trophyBase(baseLength, baseWidth, baseHeight); // Base.
 		}
 
-		rotate ([0, 0, 90]) {
-			linear_extrude(5, center = true)
-				translate([0, 0, 0]) bottleOpener(20 , 10, 10, 1);
+		rotate ([0, 0, -90]) {
+			translate([0, 0, 4.99]) {
+				linear_extrude(10, center = true)
+					bottleOpener(34 , 28, 30, 1); // Bottle opener.
+			}
+		}
+
+		// Cutout to store a nickel for bottle opening.
+		union() {
+			translate([21, 0, 3])
+				cylinder(2, r = 11, center = true);
+			translate([0, -11, 2])
+				cube([21, 22, 2]);
 		}
 	}
 }
 
-trophy(30, 30, 10, 6.5, 30); // Draws the trophy.
+trophy(60, 60, 20, 15, 80); // Draws the trophy.
