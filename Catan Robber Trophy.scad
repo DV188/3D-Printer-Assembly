@@ -84,10 +84,10 @@ module bottleOpener(large, small, height, radius) {
 
 	// Connects four circles at each corner to create rounded trapezoid.
 	hull () {
-		translate([radius, radius, 0]) circle(r = radius);
-		translate([large - radius, radius, 0]) circle(r = radius);
-		translate([centerSmall + small - radius, height, 0]) circle(r = radius);
-		translate([centerSmall + radius, height, 0]) circle(r = radius);
+		translate([-(large/2) + radius, -(height/2) + radius, 0]) circle(r = radius);
+		translate([(large/2) - radius, -(height/2) + radius, 0]) circle(r = radius);
+		translate([(small/2) - radius, (height/2) - radius, 0]) circle(r = radius);
+		translate([-(small/2) + radius, (height/2) - radius, 0]) circle(r = radius);
 	}
 }
 
@@ -101,11 +101,18 @@ module bottleOpener(large, small, height, radius) {
    - robberHeight determines the height of the robber in the z-axis
  */
 module trophy(baseLength, baseWidth, baseHeight, robberRadius, robberHeight) {
-	union() {
-		translate([0, 0, baseHeight]) robber(robberRadius, robberHeight); // Robber.
+	difference () {
+		union() {
+			translate([0, 0, baseHeight]) robber(robberRadius, robberHeight); // Robber.
 
-		translate([-(baseWidth*0.375 + baseHeight*0.125), 0, 0])
-			rotate([90, 0, 0]) trophyBase(baseLength, baseWidth, baseHeight); // Base.
+			translate([-(baseWidth*0.375 + baseHeight*0.125), 0, 0])
+				rotate([90, 0, 0]) trophyBase(baseLength, baseWidth, baseHeight); // Base.
+		}
+
+		rotate ([0, 0, 90]) {
+			linear_extrude(5, center = true)
+				translate([0, 0, 0]) bottleOpener(20 , 10, 10, 1);
+		}
 	}
 }
 
