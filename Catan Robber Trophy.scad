@@ -73,6 +73,25 @@ module trophyBase(length, width, height) {
 }
 
 /*
+	Parameters:
+	- large determines the length of the larger side of the trapezoid
+	- small determines the length of the smaller side of the trapezoid
+	- height determines how high the bottle opener will be
+	- radius determines how rounded the corners will be
+ */
+module bottleOpener(large, small, height, radius) {
+	centerSmall = (large - small)/2; // Offsets small to be centered with respect to large.
+
+	// Connects four circles at each corner to create rounded trapezoid.
+	hull () {
+		translate([radius, radius, 0]) circle(r = radius);
+		translate([large - radius, radius, 0]) circle(r = radius);
+		translate([centerSmall + small - radius, height, 0]) circle(r = radius);
+		translate([centerSmall + radius, height, 0]) circle(r = radius);
+	}
+}
+
+/*
    Final object which creates the trophy.
    Parameters:
    - baseLength determines the x-axis with respect to the catan lettering.
@@ -83,10 +102,10 @@ module trophyBase(length, width, height) {
  */
 module trophy(baseLength, baseWidth, baseHeight, robberRadius, robberHeight) {
 	union() {
-		translate([0, 0, baseHeight]) robber(robberRadius, robberHeight);
+		translate([0, 0, baseHeight]) robber(robberRadius, robberHeight); // Robber.
 
 		translate([-(baseWidth*0.375 + baseHeight*0.125), 0, 0])
-			rotate([90, 0, 0]) trophyBase(baseLength, baseWidth, baseHeight);
+			rotate([90, 0, 0]) trophyBase(baseLength, baseWidth, baseHeight); // Base.
 	}
 }
 
